@@ -1,0 +1,4 @@
+# Auto-enforce LF line endings for all Python files to guarantee byte-identical deployment
+*.py text eol=lf
+*.toml text eol=lf
+*.md text eol=lf
