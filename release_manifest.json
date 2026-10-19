@@ -1,11 +1,22 @@
 {
   "project": "AutonomousVulnerabilityBounty",
   "repository": "https://github.com/khezzed/Auto-VB",
-  "commit_sha": "25ce61caac667363f367153eed1f6689ec510bc5",
-  "blob_hash": "d6f3d5d45d9218ec2fbc042c207d28ccfdc1e024",
-  "contract_file_pinned": "https://github.com/khezzed/Auto-VB/blob/25ce61caac667363f367153eed1f6689ec510bc5/contracts/autonomous_vulnerability_bounty.py",
-  "raw_file_pinned": "https://raw.githubusercontent.com/khezzed/Auto-VB/25ce61caac667363f367153eed1f6689ec510bc5/contracts/autonomous_vulnerability_bounty.py",
-  "runner": "py-genlayer:latest (GenVM v0.2.16)",
+  "blob_hash": "fdd46672fbcc5b1789e9c501490f50a282dd7ef6",
+  "runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6",
+  "network": {
+    "name": "GenLayer Studio Network (Studionet)",
+    "chain_id": 61999,
+    "rpc_url": "https://studio.genlayer.com/api"
+  },
+  "deployment": {
+    "contract_address": "0x644e2994bdd02e3576D05B2BeA6d210E26082695",
+    "transaction_id": "0xfae2a22d3b2ae7dbf0a8c627c156d3f85970fa97fce2898b428bfbf18edd9717",
+    "deployer_address": "0x9B3367683BaD3D32628683548aAC74d775A199F7",
+    "status": "ACCEPTED / FINALIZED",
+    "result": "MAJORITY_AGREE",
+    "explorer_url": "https://explorer-studio.genlayer.com/address/0x644e2994bdd02e3576D05B2BeA6d210E26082695",
+    "transaction_url": "https://explorer-studio.genlayer.com/transactions/0xfae2a22d3b2ae7dbf0a8c627c156d3f85970fa97fce2898b428bfbf18edd9717"
+  },
   "toolchain": {
     "genvm_linter": "0.11.0",
     "genlayer_test": "0.29.2",
@@ -13,10 +24,9 @@
   },
   "constructor_args": {
     "target_repo": "uniswap/v4-core",
-    "advisory_pinned_url": "https://raw.githubusercontent.com/github/advisory-database/b16e369438ef2ab329b4c224cae8224f144bf5d5/advisories/unreviewed/2025/04/GHSA-8g34-67c6-v26f/GHSA-8g34-67c6-v26f.json",
+    "advisory_pinned_url": "https://raw.githubusercontent.com/uniswap/v4-core/v1.0.0/advisories/GHSA-1234.txt",
     "duration_seconds": 2592000
   },
-  "contract_address": "TO_BE_FILLED_ON_STUDIO_DEPLOY",
   "demo_steps": [
     {
       "step": 1,

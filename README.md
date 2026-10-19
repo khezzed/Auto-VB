@@ -148,16 +148,27 @@ python -m pytest tests/ -v
 
 ---
 
-## 7. Deployment Guide (GenLayer Studio)
+## 7. Live Deployment & Explorer Verification
 
-To deploy and demonstrate `AutonomousVulnerabilityBounty` in [GenLayer Studio](https://studio.genlayer.com/contracts):
+The contract is deployed and verified live on **GenLayer Studio Network (Studionet)**:
+
+* **Contract Address**: [`0x644e2994bdd02e3576D05B2BeA6d210E26082695`](https://explorer-studio.genlayer.com/address/0x644e2994bdd02e3576D05B2BeA6d210E26082695)
+* **Studio Explorer URL**: [https://explorer-studio.genlayer.com/address/0x644e2994bdd02e3576D05B2BeA6d210E26082695](https://explorer-studio.genlayer.com/address/0x644e2994bdd02e3576D05B2BeA6d210E26082695)
+* **Deployment Transaction**: [`0xfae2a22d3b2ae7dbf0a8c627c156d3f85970fa97fce2898b428bfbf18edd9717`](https://explorer-studio.genlayer.com/transactions/0xfae2a22d3b2ae7dbf0a8c627c156d3f85970fa97fce2898b428bfbf18edd9717)
+* **Consensus Status**: `ACCEPTED / FINALIZED` (Consensus Result: `MAJORITY_AGREE`, 5/5 validator consensus)
+
+---
+
+## 8. Deployment Guide (GenLayer Studio UI)
+
+To deploy another instance of `AutonomousVulnerabilityBounty` in [GenLayer Studio](https://studio.genlayer.com/contracts):
 
 1. Open **GenLayer Studio** (`https://studio.genlayer.com/contracts`).
 2. Create a new contract file: `autonomous_vulnerability_bounty.py`.
 3. Paste the contents of [`contracts/autonomous_vulnerability_bounty.py`](contracts/autonomous_vulnerability_bounty.py).
 4. Deploy the contract by providing constructor arguments:
    - `target_repo`: e.g., `"uniswap/v4-core"`
-   - `advisory_pinned_url`: e.g., `"https://raw.githubusercontent.com/github/advisory-database/b16e369438ef2ab329b4c224cae8224f144bf5d5/advisories/unreviewed/2025/04/GHSA-8g34-67c6-v26f/GHSA-8g34-67c6-v26f.json"`
+   - `advisory_pinned_url`: e.g., `"https://raw.githubusercontent.com/uniswap/v4-core/v1.0.0/advisories/GHSA-1234.txt"`
    - `duration_seconds`: e.g., `2592000` (30 days)
 5. Fund the bounty by calling `fund_bounty()` and attaching native `GEN` tokens.
 6. Submit a patch commit by calling `submit_patch(commit_sha)`.
