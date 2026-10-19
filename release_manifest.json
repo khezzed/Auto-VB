@@ -1,10 +1,10 @@
 {
   "project": "AutonomousVulnerabilityBounty",
   "repository": "https://github.com/khezzed/Auto-VB",
-  "commit_sha": "9d8ccdffb3d227fdd19f39688be2710da125489d",
+  "commit_sha": "04404d691a8f7c4e697e704f4a1d74c7ae4afd66",
   "blob_hash": "d6f3d5d45d9218ec2fbc042c207d28ccfdc1e024",
-  "contract_file_pinned": "https://github.com/khezzed/Auto-VB/blob/9d8ccdffb3d227fdd19f39688be2710da125489d/contracts/autonomous_vulnerability_bounty.py",
-  "raw_file_pinned": "https://raw.githubusercontent.com/khezzed/Auto-VB/9d8ccdffb3d227fdd19f39688be2710da125489d/contracts/autonomous_vulnerability_bounty.py",
+  "contract_file_pinned": "https://github.com/khezzed/Auto-VB/blob/04404d691a8f7c4e697e704f4a1d74c7ae4afd66/contracts/autonomous_vulnerability_bounty.py",
+  "raw_file_pinned": "https://raw.githubusercontent.com/khezzed/Auto-VB/04404d691a8f7c4e697e704f4a1d74c7ae4afd66/contracts/autonomous_vulnerability_bounty.py",
   "runner": "py-genlayer:latest (GenVM v0.2.16)",
   "toolchain": {
     "genvm_linter": "0.11.0",
