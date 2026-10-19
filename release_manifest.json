@@ -1,8 +1,10 @@
 {
   "project": "AutonomousVulnerabilityBounty",
   "repository": "https://github.com/khezzed/Auto-VB",
-  "commit_sha": "0df3f9baa85c78732955169f59b3b67a276da5f4",
+  "commit_sha": "b23af40fd0d118b791fb28acad5d4b1240d49a40",
   "blob_hash": "fdd46672fbcc5b1789e9c501490f50a282dd7ef6",
+  "contract_file_pinned": "https://github.com/khezzed/Auto-VB/blob/b23af40fd0d118b791fb28acad5d4b1240d49a40/contracts/autonomous_vulnerability_bounty.py",
+  "raw_file_pinned": "https://raw.githubusercontent.com/khezzed/Auto-VB/b23af40fd0d118b791fb28acad5d4b1240d49a40/contracts/autonomous_vulnerability_bounty.py",
   "runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6",
   "network": {
     "name": "GenLayer Studio Network (Studionet)",
