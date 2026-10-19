@@ -14,7 +14,7 @@ SPONSOR_ADDR = Address("0x1111111111111111111111111111111111111111")
 WHITEHAT_ADDR = Address("0x2222222222222222222222222222222222222222")
 
 TARGET_REPO = "uniswap/v4-core"
-ADVISORY_URL = "https://raw.githubusercontent.com/uniswap/v4-core/v1.0.0/advisories/GHSA-1234.txt"
+ADVISORY_URL = "https://raw.githubusercontent.com/github/advisory-database/b16e369438ef2ab329b4c224cae8224f144bf5d5/advisories/unreviewed/2025/04/GHSA-8g34-67c6-v26f/GHSA-8g34-67c6-v26f.json"
 PATCH_COMMIT = "a" * 40
 
 

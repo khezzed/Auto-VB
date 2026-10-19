@@ -13,7 +13,7 @@
   },
   "constructor_args": {
     "target_repo": "uniswap/v4-core",
-    "advisory_pinned_url": "https://raw.githubusercontent.com/uniswap/v4-core/v1.0.0/advisories/GHSA-1234.txt",
+    "advisory_pinned_url": "https://raw.githubusercontent.com/github/advisory-database/b16e369438ef2ab329b4c224cae8224f144bf5d5/advisories/unreviewed/2025/04/GHSA-8g34-67c6-v26f/GHSA-8g34-67c6-v26f.json",
     "duration_seconds": 2592000
   },
   "contract_address": "TO_BE_FILLED_ON_STUDIO_DEPLOY",

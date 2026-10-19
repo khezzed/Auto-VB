@@ -157,7 +157,7 @@ To deploy and demonstrate `AutonomousVulnerabilityBounty` in [GenLayer Studio](h
 3. Paste the contents of [`contracts/autonomous_vulnerability_bounty.py`](contracts/autonomous_vulnerability_bounty.py).
 4. Deploy the contract by providing constructor arguments:
    - `target_repo`: e.g., `"uniswap/v4-core"`
-   - `advisory_pinned_url`: e.g., `"https://raw.githubusercontent.com/uniswap/v4-core/v1.0.0/advisories/GHSA-1234.txt"`
+   - `advisory_pinned_url`: e.g., `"https://raw.githubusercontent.com/github/advisory-database/b16e369438ef2ab329b4c224cae8224f144bf5d5/advisories/unreviewed/2025/04/GHSA-8g34-67c6-v26f/GHSA-8g34-67c6-v26f.json"`
    - `duration_seconds`: e.g., `2592000` (30 days)
 5. Fund the bounty by calling `fund_bounty()` and attaching native `GEN` tokens.
 6. Submit a patch commit by calling `submit_patch(commit_sha)`.
