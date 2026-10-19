@@ -1,6 +1,7 @@
 {
   "project": "AutonomousVulnerabilityBounty",
   "repository": "https://github.com/khezzed/Auto-VB",
+  "commit_sha": "0df3f9baa85c78732955169f59b3b67a276da5f4",
   "blob_hash": "fdd46672fbcc5b1789e9c501490f50a282dd7ef6",
   "runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6",
   "network": {
