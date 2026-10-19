@@ -1,0 +1,82 @@
+{
+  "project": "AutonomousVulnerabilityBounty",
+  "repository": "https://github.com/khezzed/Auto-VB",
+  "commit_sha": "9d8ccdffb3d227fdd19f39688be2710da125489d",
+  "blob_hash": "d6f3d5d45d9218ec2fbc042c207d28ccfdc1e024",
+  "contract_file_pinned": "https://github.com/khezzed/Auto-VB/blob/9d8ccdffb3d227fdd19f39688be2710da125489d/contracts/autonomous_vulnerability_bounty.py",
+  "raw_file_pinned": "https://raw.githubusercontent.com/khezzed/Auto-VB/9d8ccdffb3d227fdd19f39688be2710da125489d/contracts/autonomous_vulnerability_bounty.py",
+  "runner": "py-genlayer:latest (GenVM v0.2.16)",
+  "toolchain": {
+    "genvm_linter": "0.11.0",
+    "genlayer_test": "0.29.2",
+    "python": "3.14.6"
+  },
+  "constructor_args": {
+    "target_repo": "uniswap/v4-core",
+    "advisory_pinned_url": "https://raw.githubusercontent.com/uniswap/v4-core/v1.0.0/advisories/GHSA-1234.txt",
+    "duration_seconds": 2592000
+  },
+  "contract_address": "TO_BE_FILLED_ON_STUDIO_DEPLOY",
+  "demo_steps": [
+    {
+      "step": 1,
+      "action": "deploy_contract",
+      "caller": "sponsor",
+      "expected_outcome": "FINALIZED + SUCCESS",
+      "read_back_state": { "status": 0, "bounty_amount": 0 }
+    },
+    {
+      "step": 2,
+      "action": "fund_bounty",
+      "caller": "sponsor",
+      "value": "10000000000000000000",
+      "expected_outcome": "FINALIZED + SUCCESS",
+      "read_back_state": { "status": 1, "bounty_amount": "10000000000000000000" }
+    },
+    {
+      "step": 3,
+      "action": "submit_patch",
+      "caller": "whitehat",
+      "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "expected_outcome": "FINALIZED + SUCCESS",
+      "read_back_state": { "status": 2, "patch_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
+    },
+    {
+      "step": 4,
+      "action": "evaluate_patch",
+      "caller": "permissionless",
+      "expected_outcome": "FINALIZED + SUCCESS",
+      "read_back_state": { "status": 3, "p1_exploit_resolved": "HOLDS" }
+    },
+    {
+      "step": 5,
+      "action": "claim_bounty_premature",
+      "caller": "whitehat",
+      "label": "EXPECTED_FAILURE",
+      "expected_revert": "Bounty not eligible for claim."
+    },
+    {
+      "step": 6,
+      "action": "submit_challenge",
+      "caller": "challenger",
+      "proof_commit_sha": "cccccccccccccccccccccccccccccccccccccccc",
+      "stake_amount": "1000000000000000000",
+      "expected_outcome": "FINALIZED + SUCCESS",
+      "read_back_state": { "status": 5, "challenge_commit": "cccccccccccccccccccccccccccccccccccccccc" }
+    },
+    {
+      "step": 7,
+      "action": "evaluate_challenge",
+      "caller": "permissionless",
+      "expected_outcome": "FINALIZED + SUCCESS",
+      "read_back_state": { "status": 6, "c1_bypass_proven": "CONTRADICTED" }
+    },
+    {
+      "step": 8,
+      "action": "claim_bounty_defended",
+      "caller": "whitehat",
+      "expected_outcome": "FINALIZED + SUCCESS",
+      "read_back_state": { "status": 8, "bounty_amount": 0 }
+    }
+  ]
+}
