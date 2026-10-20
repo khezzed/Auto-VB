@@ -1,95 +1,397 @@
 {
-  "project": "AutonomousVulnerabilityBounty",
-  "repository": "https://github.com/khezzed/Auto-VB",
-  "commit_sha": "b23af40fd0d118b791fb28acad5d4b1240d49a40",
-  "blob_hash": "fdd46672fbcc5b1789e9c501490f50a282dd7ef6",
-  "contract_file_pinned": "https://github.com/khezzed/Auto-VB/blob/b23af40fd0d118b791fb28acad5d4b1240d49a40/contracts/autonomous_vulnerability_bounty.py",
-  "raw_file_pinned": "https://raw.githubusercontent.com/khezzed/Auto-VB/b23af40fd0d118b791fb28acad5d4b1240d49a40/contracts/autonomous_vulnerability_bounty.py",
-  "runner": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6",
+  "project": "AutonomousVulnerabilityBounty - Contested Two-Round Vulnerability Remediation & Bounty Protocol",
+  "generated_at_utc": "2026-10-20T19:47:38.582671+00:00",
   "network": {
-    "name": "GenLayer Studio Network (Studionet)",
+    "name": "studionet",
     "chain_id": 61999,
-    "rpc_url": "https://studio.genlayer.com/api"
+    "rpc_endpoint": "https://studio.genlayer.com/api",
+    "explorer_base_url": "https://explorer-studio.genlayer.com"
   },
-  "deployment": {
-    "contract_address": "0x644e2994bdd02e3576D05B2BeA6d210E26082695",
-    "transaction_id": "0xfae2a22d3b2ae7dbf0a8c627c156d3f85970fa97fce2898b428bfbf18edd9717",
-    "deployer_address": "0x9B3367683BaD3D32628683548aAC74d775A199F7",
-    "status": "ACCEPTED / FINALIZED",
-    "result": "MAJORITY_AGREE",
-    "explorer_url": "https://explorer-studio.genlayer.com/address/0x644e2994bdd02e3576D05B2BeA6d210E26082695",
-    "transaction_url": "https://explorer-studio.genlayer.com/transactions/0xfae2a22d3b2ae7dbf0a8c627c156d3f85970fa97fce2898b428bfbf18edd9717"
+  "source_verification": {
+    "repository_url": "https://github.com/khezzed/Auto-VB",
+    "contract_path": "contracts/autonomous_vulnerability_bounty.py",
+    "deployed_commit_sha": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4",
+    "git_blob_sha1": "1a5d7437b43d00fc26f0e77458e3001dad0ebf47",
+    "byte_length": 27966,
+    "line_endings": "LF",
+    "runner_header": "# { \"Depends\": \"py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6\" }"
   },
   "toolchain": {
+    "python_version": "3.14.6",
+    "genlayer_py": "0.16.3",
     "genvm_linter": "0.11.0",
-    "genlayer_test": "0.29.2",
-    "python": "3.14.6"
+    "genlayer_test": "0.29.2"
   },
-  "constructor_args": {
-    "target_repo": "uniswap/v4-core",
-    "advisory_pinned_url": "https://raw.githubusercontent.com/uniswap/v4-core/v1.0.0/advisories/GHSA-1234.txt",
-    "duration_seconds": 2592000
+  "evidence_fixtures": [
+    {
+      "id": "advisory_url",
+      "url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+      "http_status": 200
+    },
+    {
+      "id": "patch_diff_url",
+      "url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/patch.diff",
+      "http_status": 200
+    },
+    {
+      "id": "exploit_proof_url",
+      "url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/exploit_proof.py",
+      "http_status": 200
+    }
+  ],
+  "deployment": {
+    "contract_address": "0xdCc2485f6C2D712E03ec324160591e007abE6cf3",
+    "explorer_contract_url": "https://explorer-studio.genlayer.com/address/0xdCc2485f6C2D712E03ec324160591e007abE6cf3",
+    "sponsor_address": "0x6B3Fd4B8ce92e27198920493C01b5058582203a0",
+    "whitehat_address": "0x96BA75832B6233df740471AceB5f755b33D806AA",
+    "challenger_address": "0x6D94044835018941Efd171216BD254ff62602f9c",
+    "constructor_args": [
+      "khezzed/Auto-VB",
+      "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+      2592000
+    ]
   },
-  "demo_steps": [
+  "transactions": [
     {
-      "step": 1,
-      "action": "deploy_contract",
-      "caller": "sponsor",
-      "expected_outcome": "FINALIZED + SUCCESS",
-      "read_back_state": { "status": 0, "bounty_amount": 0 }
+      "label": "deploy_contract",
+      "tx_hash": "0x2a197c46b0648ee084cff79b2163d6d7f355e7cf99c5a2fce944e993c21ffc66",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0x2a197c46b0648ee084cff79b2163d6d7f355e7cf99c5a2fce944e993c21ffc66",
+      "expected_failure": false,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "SUCCESS",
+      "leader_error": null,
+      "votes": {
+        "0x6a4179A851B3747A458baD2f089AB2EeFE0eBbAb": "agree",
+        "0x8a876C3F3a4783Bd123982bcBF3c672dc0239004": "agree",
+        "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "agree",
+        "0xA712cB25a4002666FA9D09477251f238dD9e06b3": "agree",
+        "0xf29b6947ed298d139FC2655DB15D868C9AbB3091": "agree"
+      },
+      "accepted_status_observed": "ACCEPTED",
+      "read_backs": {
+        "get_bounty_state": {
+          "advisory_pinned_url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+          "balance": 0,
+          "bounty_amount": 0,
+          "bounty_deadline": 1795117122,
+          "challenge_unlock": 0,
+          "patch_commit": "",
+          "sponsor": "0x6B3Fd4B8ce92e27198920493C01b5058582203a0",
+          "status": 0,
+          "submission_count": 0,
+          "target_repo": "khezzed/Auto-VB",
+          "whitehat": "0x0000000000000000000000000000000000000000"
+        }
+      }
     },
     {
-      "step": 2,
-      "action": "fund_bounty",
-      "caller": "sponsor",
-      "value": "10000000000000000000",
-      "expected_outcome": "FINALIZED + SUCCESS",
-      "read_back_state": { "status": 1, "bounty_amount": "10000000000000000000" }
+      "label": "guard_non_sponsor_fund (EXPECTED FAILURE: Only the sponsor can fund this bounty.)",
+      "tx_hash": "0xcd9d42c09c1ebcefd4a251d1a1b5376b7c5806bd248379b1399c9e72aa52540f",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0xcd9d42c09c1ebcefd4a251d1a1b5376b7c5806bd248379b1399c9e72aa52540f",
+      "expected_failure": true,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "ERROR",
+      "leader_error": null,
+      "votes": {
+        "0x1242E9f5bf9b253327f130E8802b7b2F438A21Ef": "agree",
+        "0x5Bbbd7cdD63c0ba7f088038Cb049bDDAbE4F6fd1": "agree",
+        "0x6a4179A851B3747A458baD2f089AB2EeFE0eBbAb": "agree",
+        "0x7bf4Ea55363bbe73A4dd5b3900bf03c978A63b6e": "agree",
+        "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "agree"
+      },
+      "accepted_status_observed": "ACCEPTED"
     },
     {
-      "step": 3,
-      "action": "submit_patch",
-      "caller": "whitehat",
-      "commit_sha": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
-      "expected_outcome": "FINALIZED + SUCCESS",
-      "read_back_state": { "status": 2, "patch_commit": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" }
+      "label": "fund_bounty (1000 wei)",
+      "tx_hash": "0x37d1fd4ac14cd9404f0f1326b67c54527047c49b8689ec86bfaec394a869cb62",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0x37d1fd4ac14cd9404f0f1326b67c54527047c49b8689ec86bfaec394a869cb62",
+      "expected_failure": false,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "SUCCESS",
+      "leader_error": null,
+      "votes": {
+        "0x1242E9f5bf9b253327f130E8802b7b2F438A21Ef": "agree",
+        "0x40533175AfBbAee2c030F88259Afb5aEDbCF0E05": "agree",
+        "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "agree",
+        "0xad7d13f269CeAd4379E64a1A3a0803a827e70B43": "agree",
+        "0xe7eEe8a1c1690b0322d795B80A76ab2Cd1a0eAFd": "agree"
+      },
+      "accepted_status_observed": "ACCEPTED",
+      "read_backs": {
+        "get_bounty_state": {
+          "advisory_pinned_url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+          "balance": 2000,
+          "bounty_amount": 1000,
+          "bounty_deadline": 1795117122,
+          "challenge_unlock": 0,
+          "patch_commit": "",
+          "sponsor": "0x6B3Fd4B8ce92e27198920493C01b5058582203a0",
+          "status": 1,
+          "submission_count": 0,
+          "target_repo": "khezzed/Auto-VB",
+          "whitehat": "0x0000000000000000000000000000000000000000"
+        }
+      }
     },
     {
-      "step": 4,
-      "action": "evaluate_patch",
-      "caller": "permissionless",
-      "expected_outcome": "FINALIZED + SUCCESS",
-      "read_back_state": { "status": 3, "p1_exploit_resolved": "HOLDS" }
+      "label": "guard_invalid_commit_sha (EXPECTED FAILURE: Invalid commit_sha format)",
+      "tx_hash": "0xef4a99c5cfaf3cc7895d978a479622eef4af12439f27e52b2c67f4623f6eda57",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0xef4a99c5cfaf3cc7895d978a479622eef4af12439f27e52b2c67f4623f6eda57",
+      "expected_failure": true,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "ERROR",
+      "leader_error": null,
+      "votes": {
+        "0x17ac0CaefB18205c737e64ee582c9245A28ca1f9": "agree",
+        "0x5Bbbd7cdD63c0ba7f088038Cb049bDDAbE4F6fd1": "agree",
+        "0x892C437da9b9CA0b6017B6f046F58E3526B46ec6": "idle",
+        "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "idle",
+        "0xf29b6947ed298d139FC2655DB15D868C9AbB3091": "agree"
+      },
+      "accepted_status_observed": "ACCEPTED"
     },
     {
-      "step": 5,
-      "action": "claim_bounty_premature",
-      "caller": "whitehat",
-      "label": "EXPECTED_FAILURE",
-      "expected_revert": "Bounty not eligible for claim."
+      "label": "submit_patch (6c8a73f8f4...)",
+      "tx_hash": "0x257f9f174576b30896d6bf081469cfd1ce71da369eb54c3c150c2e6167bf5df5",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0x257f9f174576b30896d6bf081469cfd1ce71da369eb54c3c150c2e6167bf5df5",
+      "expected_failure": false,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "SUCCESS",
+      "leader_error": null,
+      "votes": {
+        "0x0B50B270Eba5D9B780272C4Cf4720260177e761D": "agree",
+        "0x40533175AfBbAee2c030F88259Afb5aEDbCF0E05": "agree",
+        "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "agree",
+        "0xa21bc502E3578E4b3039be8c59a257198f7c3f19": "agree",
+        "0xf1C7551292319EE334e2D8A24eAC108Bd4C63b21": "idle"
+      },
+      "accepted_status_observed": "ACCEPTED",
+      "read_backs": {
+        "get_bounty_state": {
+          "advisory_pinned_url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+          "balance": 2000,
+          "bounty_amount": 1000,
+          "bounty_deadline": 1795117122,
+          "challenge_unlock": 0,
+          "patch_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4",
+          "sponsor": "0x6B3Fd4B8ce92e27198920493C01b5058582203a0",
+          "status": 2,
+          "submission_count": 1,
+          "target_repo": "khezzed/Auto-VB",
+          "whitehat": "0x96BA75832B6233df740471AceB5f755b33D806AA"
+        },
+        "get_patch_audit": {
+          "canonical_citations": "[]",
+          "evaluation_timestamp": 0,
+          "p1_exploit_resolved": "UNCLEAR",
+          "p2_no_regressions": "UNCLEAR",
+          "p3_tests_adequate": "UNCLEAR",
+          "target_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4"
+        }
+      }
     },
     {
-      "step": 6,
-      "action": "submit_challenge",
-      "caller": "challenger",
-      "proof_commit_sha": "cccccccccccccccccccccccccccccccccccccccc",
-      "stake_amount": "1000000000000000000",
-      "expected_outcome": "FINALIZED + SUCCESS",
-      "read_back_state": { "status": 5, "challenge_commit": "cccccccccccccccccccccccccccccccccccccccc" }
+      "label": "evaluate_patch (Round 1 Consensus -> STATUS_CHALLENGE_WINDOW)",
+      "tx_hash": "0xdb83aaec929d1de5840663a85018beda0d9d2029048e8dcb1318cf91a7492683",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0xdb83aaec929d1de5840663a85018beda0d9d2029048e8dcb1318cf91a7492683",
+      "expected_failure": false,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "SUCCESS",
+      "leader_error": null,
+      "votes": {
+        "0x40533175AfBbAee2c030F88259Afb5aEDbCF0E05": "agree",
+        "0x5Bbbd7cdD63c0ba7f088038Cb049bDDAbE4F6fd1": "agree",
+        "0x8Ce1805d6970d54748dE7160b5b395dCC5c71F44": "idle",
+        "0xa21bc502E3578E4b3039be8c59a257198f7c3f19": "agree",
+        "0xf29b6947ed298d139FC2655DB15D868C9AbB3091": "idle"
+      },
+      "accepted_status_observed": "ACCEPTED",
+      "read_backs": {
+        "get_bounty_state": {
+          "advisory_pinned_url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+          "balance": 2000,
+          "bounty_amount": 1000,
+          "bounty_deadline": 1795117122,
+          "challenge_unlock": 1792698131,
+          "patch_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4",
+          "sponsor": "0x6B3Fd4B8ce92e27198920493C01b5058582203a0",
+          "status": 3,
+          "submission_count": 1,
+          "target_repo": "khezzed/Auto-VB",
+          "whitehat": "0x96BA75832B6233df740471AceB5f755b33D806AA"
+        },
+        "get_patch_audit": {
+          "canonical_citations": "[\"+        balances[msg.sender] -= amount;\", \"+    function testReentrancyBlocked() external {\", \"+    function withdraw(uint256 amount) external nonReentrant {\"]",
+          "evaluation_timestamp": 1792525331,
+          "p1_exploit_resolved": "HOLDS",
+          "p2_no_regressions": "HOLDS",
+          "p3_tests_adequate": "HOLDS",
+          "target_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4"
+        }
+      }
     },
     {
-      "step": 7,
-      "action": "evaluate_challenge",
-      "caller": "permissionless",
-      "expected_outcome": "FINALIZED + SUCCESS",
-      "read_back_state": { "status": 6, "c1_bypass_proven": "CONTRADICTED" }
+      "label": "guard_premature_claim (EXPECTED FAILURE: Bounty not eligible for claim.)",
+      "tx_hash": "0x5d515d5062330375928ae8ad387656eca75434463299b2300bffe65982545173",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0x5d515d5062330375928ae8ad387656eca75434463299b2300bffe65982545173",
+      "expected_failure": true,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "ERROR",
+      "leader_error": null,
+      "votes": {
+        "0x2FcBC452425f2F1e102c5c04b4331fcB46ee1c00": "agree",
+        "0x892C437da9b9CA0b6017B6f046F58E3526B46ec6": "agree",
+        "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "agree",
+        "0xA712cB25a4002666FA9D09477251f238dD9e06b3": "agree",
+        "0xad7d13f269CeAd4379E64a1A3a0803a827e70B43": "agree"
+      },
+      "accepted_status_observed": "ACCEPTED"
     },
     {
-      "step": 8,
-      "action": "claim_bounty_defended",
-      "caller": "whitehat",
-      "expected_outcome": "FINALIZED + SUCCESS",
-      "read_back_state": { "status": 8, "bounty_amount": 0 }
+      "label": "guard_insufficient_challenge_stake (EXPECTED FAILURE: Insufficient challenge stake)",
+      "tx_hash": "0x794919d2cdec655de52388ac1960347f2eeb64d00642bd52f3bb1db91112e4b9",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0x794919d2cdec655de52388ac1960347f2eeb64d00642bd52f3bb1db91112e4b9",
+      "expected_failure": true,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "ERROR",
+      "leader_error": null,
+      "votes": {
+        "0x2FcBC452425f2F1e102c5c04b4331fcB46ee1c00": "agree",
+        "0x40533175AfBbAee2c030F88259Afb5aEDbCF0E05": "agree",
+        "0x5Bbbd7cdD63c0ba7f088038Cb049bDDAbE4F6fd1": "agree",
+        "0xa21bc502E3578E4b3039be8c59a257198f7c3f19": "agree",
+        "0xe7eEe8a1c1690b0322d795B80A76ab2Cd1a0eAFd": "agree"
+      },
+      "accepted_status_observed": "ACCEPTED"
+    },
+    {
+      "label": "submit_challenge (100 wei collateral stake)",
+      "tx_hash": "0xae1fb1b55579cf21751c3c9a2ccd38afe4ca9068230fe85e9641084cd91ae952",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0xae1fb1b55579cf21751c3c9a2ccd38afe4ca9068230fe85e9641084cd91ae952",
+      "expected_failure": false,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "SUCCESS",
+      "leader_error": null,
+      "votes": {
+        "0x1dEcE6A694520b1d3a2e24b9f28500858C756BDb": "agree",
+        "0x7bf4Ea55363bbe73A4dd5b3900bf03c978A63b6e": "idle",
+        "0x8a876C3F3a4783Bd123982bcBF3c672dc0239004": "agree",
+        "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "agree",
+        "0xf29b6947ed298d139FC2655DB15D868C9AbB3091": "idle"
+      },
+      "accepted_status_observed": "ACCEPTED",
+      "read_backs": {
+        "get_bounty_state": {
+          "advisory_pinned_url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+          "balance": 2110,
+          "bounty_amount": 1000,
+          "bounty_deadline": 1795117122,
+          "challenge_unlock": 1792698131,
+          "patch_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4",
+          "sponsor": "0x6B3Fd4B8ce92e27198920493C01b5058582203a0",
+          "status": 5,
+          "submission_count": 1,
+          "target_repo": "khezzed/Auto-VB",
+          "whitehat": "0x96BA75832B6233df740471AceB5f755b33D806AA"
+        },
+        "get_challenge_audit": {
+          "c1_bypass_proven": "UNCLEAR",
+          "canonical_citations": "[]",
+          "challenger": "0x6D94044835018941Efd171216BD254ff62602f9c",
+          "evaluation_timestamp": 0,
+          "proof_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4",
+          "stake_amount": 100
+        }
+      }
+    },
+    {
+      "label": "evaluate_challenge (Round 2 Consensus -> STATUS_DEFENDED, Stake Slashed)",
+      "tx_hash": "0x4ce9ae8e66ff5c5dc0e06a89ba71962a0caa5924375a1bc200922f905604ce40",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0x4ce9ae8e66ff5c5dc0e06a89ba71962a0caa5924375a1bc200922f905604ce40",
+      "expected_failure": false,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "SUCCESS",
+      "leader_error": null,
+      "votes": {
+        "0x2FcBC452425f2F1e102c5c04b4331fcB46ee1c00": "agree",
+        "0x9244De5F20cB75A0c51d79A9A3208D00a99aFc10": "idle",
+        "0xA712cB25a4002666FA9D09477251f238dD9e06b3": "idle",
+        "0xb0925568bFbCF00aADBcA053E6D0E1628ff3d530": "agree",
+        "0xf29b6947ed298d139FC2655DB15D868C9AbB3091": "agree"
+      },
+      "accepted_status_observed": "ACCEPTED",
+      "read_backs": {
+        "get_bounty_state": {
+          "advisory_pinned_url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+          "balance": 2110,
+          "bounty_amount": 1100,
+          "bounty_deadline": 1795117122,
+          "challenge_unlock": 1792698131,
+          "patch_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4",
+          "sponsor": "0x6B3Fd4B8ce92e27198920493C01b5058582203a0",
+          "status": 6,
+          "submission_count": 1,
+          "target_repo": "khezzed/Auto-VB",
+          "whitehat": "0x96BA75832B6233df740471AceB5f755b33D806AA"
+        },
+        "get_challenge_audit": {
+          "c1_bypass_proven": "CONTRADICTED",
+          "canonical_citations": "[\"No bypass or remaining vulnerability exists in the patched commit.\", \"Result: Attack FAILS because `nonReentrant` mutex is active and\"]",
+          "challenger": "0x6D94044835018941Efd171216BD254ff62602f9c",
+          "evaluation_timestamp": 1792525522,
+          "proof_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4",
+          "stake_amount": 100
+        }
+      }
+    },
+    {
+      "label": "guard_unauthorized_claim (EXPECTED FAILURE: Only the verified whitehat can claim)",
+      "tx_hash": "0xe85e1700b29f6bd08f1edd3dcb93859c6bc1c34d62574cf685e8bb36374659ed",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0xe85e1700b29f6bd08f1edd3dcb93859c6bc1c34d62574cf685e8bb36374659ed",
+      "expected_failure": true,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "ERROR",
+      "leader_error": null,
+      "votes": {
+        "0x0B50B270Eba5D9B780272C4Cf4720260177e761D": "agree",
+        "0x2FcBC452425f2F1e102c5c04b4331fcB46ee1c00": "idle",
+        "0x40533175AfBbAee2c030F88259Afb5aEDbCF0E05": "agree",
+        "0xb0925568bFbCF00aADBcA053E6D0E1628ff3d530": "agree",
+        "0xe7eEe8a1c1690b0322d795B80A76ab2Cd1a0eAFd": "idle"
+      },
+      "accepted_status_observed": "ACCEPTED"
+    },
+    {
+      "label": "claim_bounty (Whitehat claims 1100 wei fortified reward)",
+      "tx_hash": "0xcb0d536d3995097e2471364c4ea81c3b265f2f71ffadfd76c19f618226d18927",
+      "explorer_url": "https://explorer-studio.genlayer.com/transactions/0xcb0d536d3995097e2471364c4ea81c3b265f2f71ffadfd76c19f618226d18927",
+      "expected_failure": false,
+      "status_name": "FINALIZED",
+      "leader_execution_result": "SUCCESS",
+      "leader_error": null,
+      "votes": {
+        "0x1dEcE6A694520b1d3a2e24b9f28500858C756BDb": "agree",
+        "0x6a4179A851B3747A458baD2f089AB2EeFE0eBbAb": "agree",
+        "0xb0925568bFbCF00aADBcA053E6D0E1628ff3d530": "agree",
+        "0xe7eEe8a1c1690b0322d795B80A76ab2Cd1a0eAFd": "agree",
+        "0xf1C7551292319EE334e2D8A24eAC108Bd4C63b21": "agree"
+      },
+      "accepted_status_observed": "ACCEPTED",
+      "read_backs": {
+        "get_bounty_state": {
+          "advisory_pinned_url": "https://raw.githubusercontent.com/khezzed/Auto-VB/6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4/advisories/GHSA-AUTOVB-2026-001.txt",
+          "balance": 1010,
+          "bounty_amount": 0,
+          "bounty_deadline": 1795117122,
+          "challenge_unlock": 1792698131,
+          "patch_commit": "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4",
+          "sponsor": "0x6B3Fd4B8ce92e27198920493C01b5058582203a0",
+          "status": 8,
+          "submission_count": 1,
+          "target_repo": "khezzed/Auto-VB",
+          "whitehat": "0x96BA75832B6233df740471AceB5f755b33D806AA"
+        }
+      }
     }
   ]
 }
