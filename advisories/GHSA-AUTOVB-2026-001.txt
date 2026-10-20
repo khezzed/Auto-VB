@@ -1,0 +1,11 @@
+Advisory ID: GHSA-AUTOVB-2026-001
+Target Component: src/Vault.sol (withdraw function)
+Severity: CRITICAL
+Vulnerability Type: CWE-841 / Reentrancy Before State Update
+
+Summary:
+In src/Vault.sol, the `withdraw(uint256 amount)` function sends native ETH to `msg.sender` via a low-level `.call{value: amount}("")` before deducting `amount` from `balances[msg.sender]`. An attacker can re-enter `withdraw` during the external call and drain the vault.
+
+Required Remediation:
+1. Apply the Checks-Effects-Interactions (CEI) pattern by updating `balances[msg.sender] -= amount;` strictly before executing the external call, and add a `nonReentrant` guard.
+2. Add a unit test in `test/VaultTest.t.sol` (`testReentrancyBlocked`) verifying that recursive reentrancy during withdrawal reverts.
