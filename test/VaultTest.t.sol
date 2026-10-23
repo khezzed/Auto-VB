@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-contract VaultTest {
-    function testDeposit() external {
-        // Base deposit test
-    }
+import {Test} from "forge-std/Test.sol";
+import {Vault} from "../src/Vault.sol";
 
-    function testReentrancyBlocked() external {
-        // Asserts withdraw nonReentrant guard and CEI state update block reentrancy
-        revert("ReentrancyGuard: reentrant call");
+contract VaultTest is Test {
+    Vault public vault;
+
+    function setUp() public {
+        vault = new Vault();
+        vm.deal(address(vault), 10 ether);
     }
 }

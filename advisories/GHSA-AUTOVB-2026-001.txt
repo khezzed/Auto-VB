@@ -8,4 +8,4 @@ In src/Vault.sol, the `withdraw(uint256 amount)` function sends native ETH to `m
 
 Required Remediation:
 1. Apply the Checks-Effects-Interactions (CEI) pattern by updating `balances[msg.sender] -= amount;` strictly before executing the external call, and add a `nonReentrant` guard.
-2. Add a unit test in `test/VaultTest.t.sol` (`testReentrancyBlocked`) verifying that recursive reentrancy during withdrawal reverts.
+2. Add a unit test in `test/VaultTest.t.sol` (`testReentrancyBlocked`) deploying a `ReentrantAttacker` contract and asserting with `vm.expectRevert` and `assertEq` that recursive reentrancy during withdrawal reverts and preserves the vault balance.
