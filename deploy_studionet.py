@@ -16,13 +16,16 @@ from genlayer_py.types import TransactionHashVariant, TransactionStatus
 
 ENDPOINT = "https://studio.genlayer.com/api"
 EXPLORER_BASE = "https://explorer-studio.genlayer.com"
-DEPLOYED_COMMIT_SHA = "6c8a73f8f4f0485134cbca3c12b0f93aa43dd6a4"
+DEPLOYED_COMMIT_SHA = "9c6b55dacc087f8642a752228a3165ef301b29bd"
+PATCH_COMMIT_SHA = "9c6b55dacc087f8642a752228a3165ef301b29bd"
 TARGET_REPO = "khezzed/Auto-VB"
 
 PINNED_FIXTURES = {
     "advisory_url": f"https://raw.githubusercontent.com/{TARGET_REPO}/{DEPLOYED_COMMIT_SHA}/advisories/GHSA-AUTOVB-2026-001.txt",
-    "patch_diff_url": f"https://raw.githubusercontent.com/{TARGET_REPO}/{DEPLOYED_COMMIT_SHA}/patch.diff",
-    "exploit_proof_url": f"https://raw.githubusercontent.com/{TARGET_REPO}/{DEPLOYED_COMMIT_SHA}/exploit_proof.py",
+    "authoritative_commit_diff_url": f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT_SHA}.diff",
+    "authoritative_patched_source_url": f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT_SHA}/src/Vault.sol",
+    "authoritative_test_source_url": f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT_SHA}/test/VaultTest.t.sol",
+    "exploit_proof_url": f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT_SHA}/exploit_proof.py",
 }
 
 CTOR_ARGS = [
@@ -200,7 +203,7 @@ def main() -> None:
     # =========================================================================
     # Step 1: Deploy Contract
     # =========================================================================
-    print("Step 1: Deploying AutonomousVulnerabilityBounty to StudioNet...", flush=True)
+    print("Step 1: Deploying redesigned AutonomousVulnerabilityBounty to StudioNet...", flush=True)
     deploy_summary, deploy_receipt = send_and_wait_tx(
         label="deploy_contract",
         send_callable=lambda: client.deploy_contract(
@@ -288,15 +291,15 @@ def main() -> None:
     )
 
     # =========================================================================
-    # Step 5: Whitehat Submits Pinned Patch Commit
+    # Step 5: Whitehat Submits Authoritative Remediation Commit SHA
     # =========================================================================
     send_and_wait_tx(
-        label=f"submit_patch ({DEPLOYED_COMMIT_SHA[:10]}...)",
+        label=f"submit_patch ({PATCH_COMMIT_SHA[:10]}...)",
         send_callable=lambda: client.write_contract(
             address=contract_address,
             function_name="submit_patch",
             account=whitehat_acct,
-            args=[DEPLOYED_COMMIT_SHA],
+            args=[PATCH_COMMIT_SHA],
             leader_only=False,
         ),
         expected_failure=False,
@@ -307,13 +310,13 @@ def main() -> None:
         "get_patch_audit": read_fn("get_patch_audit"),
     }
     assert state_sub["status"] == 2
-    assert state_sub["patch_commit"] == DEPLOYED_COMMIT_SHA
+    assert state_sub["patch_commit"] == PATCH_COMMIT_SHA
 
     # =========================================================================
-    # Step 6: Round 1 Consensus - Evaluate Patch (GenVM Multi-Validator)
+    # Step 6: Round 1 Consensus - Evaluate Authoritative Commit Diff & Source
     # =========================================================================
     send_and_wait_tx(
-        label="evaluate_patch (Round 1 Consensus -> STATUS_CHALLENGE_WINDOW)",
+        label="evaluate_patch (Round 1 Consensus: Authoritative commit/.diff + src/Vault.sol -> STATUS_CHALLENGE_WINDOW)",
         send_callable=lambda: client.write_contract(
             address=contract_address,
             function_name="evaluate_patch",
@@ -331,6 +334,7 @@ def main() -> None:
     }
     print(f"Round 1 Audit Read-Back: {audit_eval1}", flush=True)
     assert state_eval1["status"] == 3, f"Expected status 3 (CHALLENGE_WINDOW), got {state_eval1['status']}: {audit_eval1}"
+    assert state_eval1["patched_file_path"] == "src/Vault.sol"
 
     # =========================================================================
     # Step 7: Guard - Premature Bounty Claim During Active Challenge Window
@@ -357,7 +361,7 @@ def main() -> None:
             function_name="submit_challenge",
             account=challenger_acct,
             value=10,  # Only 1% (< 10% minimum 100 wei)
-            args=[DEPLOYED_COMMIT_SHA],
+            args=[PATCH_COMMIT_SHA],
             leader_only=False,
         ),
         expected_failure=True,
@@ -373,7 +377,7 @@ def main() -> None:
             function_name="submit_challenge",
             account=challenger_acct,
             value=100,
-            args=[DEPLOYED_COMMIT_SHA],
+            args=[PATCH_COMMIT_SHA],
             leader_only=False,
         ),
         expected_failure=False,
@@ -386,10 +390,10 @@ def main() -> None:
     assert state_chal["status"] == 5
 
     # =========================================================================
-    # Step 10: Round 2 Consensus - Evaluate Counter-Exploit Challenge
+    # Step 10: Round 2 Consensus - Evaluate Counter-Exploit Against Patched Source
     # =========================================================================
     send_and_wait_tx(
-        label="evaluate_challenge (Round 2 Consensus -> STATUS_DEFENDED, Stake Slashed)",
+        label="evaluate_challenge (Round 2 Consensus: Retrieves src/Vault.sol + commit/.diff + exploit_proof.py -> STATUS_DEFENDED)",
         send_callable=lambda: client.write_contract(
             address=contract_address,
             function_name="evaluate_challenge",
@@ -479,6 +483,7 @@ def main() -> None:
             "sponsor_address": sponsor_acct.address,
             "whitehat_address": whitehat_acct.address,
             "challenger_address": challenger_acct.address,
+            "patch_commit_sha": PATCH_COMMIT_SHA,
             "constructor_args": CTOR_ARGS,
         },
         "transactions": transactions_log,
