@@ -59,16 +59,18 @@ def test_uncontested_bounty_lifecycle():
     contract.submit_patch(PATCH_COMMIT)
     assert contract.status == STATUS_PATCH_SUBMITTED
 
-    # Mock Evidence
+    # Mock Authoritative Commit Diff & Patched Source Evidence
     mock_web_responses[ADVISORY_URL] = MockWebResponse(200, b"Reentrancy flaw in unlockCallback")
-    patch_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/patch.diff"
+    diff_url = f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT}.diff"
+    source_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/src/PoolManager.sol"
     patch_diff = (
         "diff --git a/src/PoolManager.sol b/src/PoolManager.sol\n"
         "+ nonReentrant\n"
         "diff --git a/test/PoolTest.t.sol b/test/PoolTest.t.sol\n"
         "+ function testReentrancy() external {}\n"
     )
-    mock_web_responses[patch_url] = MockWebResponse(200, patch_diff.encode("utf-8"))
+    mock_web_responses[diff_url] = MockWebResponse(200, patch_diff.encode("utf-8"))
+    mock_web_responses[source_url] = MockWebResponse(200, b"contract PoolManager { nonReentrant }")
 
     def mock_eval(prompt):
         return {
@@ -84,6 +86,7 @@ def test_uncontested_bounty_lifecycle():
     assert contract.status == STATUS_CHALLENGE_WINDOW
     audit = contract.get_patch_audit()
     assert audit["p1_exploit_resolved"] == "HOLDS"
+    assert audit["patched_file_path"] == "src/PoolManager.sol"
 
     # Premature claim fails
     with pytest.raises(Exception, match="Bounty not eligible for claim"):
@@ -114,11 +117,13 @@ def test_contested_challenge_refutes_flawed_patch():
 
     # Mock evidence for patch pass
     mock_web_responses[ADVISORY_URL] = MockWebResponse(200, b"Reentrancy flaw")
-    patch_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/patch.diff"
-    mock_web_responses[patch_url] = MockWebResponse(
+    diff_url = f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT}.diff"
+    source_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/src/Vault.sol"
+    mock_web_responses[diff_url] = MockWebResponse(
         200,
-        b"diff --git a/test/t.sol b/test/t.sol\n+ test\n+ patch_code\n"
+        b"diff --git a/src/Vault.sol b/src/Vault.sol\n+ patch_code\ndiff --git a/test/t.sol b/test/t.sol\n+ test\n"
     )
+    mock_web_responses[source_url] = MockWebResponse(200, b"contract Vault { patch_code }")
 
     def mock_eval(prompt):
         return {
@@ -137,11 +142,13 @@ def test_contested_challenge_refutes_flawed_patch():
     contract.submit_challenge(CHALLENGE_COMMIT)
     assert contract.status == STATUS_CHALLENGED
 
-    # Mock challenger exploit evidence proving bypass
+    # Mock challenger exploit evidence proving bypass against patched Vault.sol
     challenge_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{CHALLENGE_COMMIT}/exploit_proof.py"
     mock_web_responses[challenge_url] = MockWebResponse(200, b"def test_bypass(): assert reentrancy_works()")
 
     def mock_challenge_eval(prompt):
+        # Verify Round 2 prompt includes the actual patched source file
+        assert "contract Vault { patch_code }" in prompt
         return {
             "c1_bypass_proven": "HOLDS",
             "citations": ["def test_bypass(): assert reentrancy_works()"],
@@ -163,15 +170,20 @@ def test_contested_challenge_defended():
     contract = AutonomousVulnerabilityBounty(TARGET_REPO, ADVISORY_URL, u256(86400 * 30))
     gl_instance.message.value = u256(10 * 10**18)
     contract.fund_bounty()
-    contract.balance = u256(11 * 10**18) # 10 GEN bounty + 1 GEN challenge stake
+    contract.balance = u256(11 * 10**18)  # 10 GEN bounty + 1 GEN challenge stake
 
     gl_instance.message.sender_address = WHITEHAT_ADDR
     gl_instance.message.value = u256(0)
     contract.submit_patch(PATCH_COMMIT)
 
     mock_web_responses[ADVISORY_URL] = MockWebResponse(200, b"Advisory")
-    patch_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/patch.diff"
-    mock_web_responses[patch_url] = MockWebResponse(200, b"diff --git a/test/t.py b/test/t.py\n+ test\n")
+    diff_url = f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT}.diff"
+    source_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/src/Vault.sol"
+    mock_web_responses[diff_url] = MockWebResponse(
+        200,
+        b"diff --git a/src/Vault.sol b/src/Vault.sol\n+ nonReentrant\ndiff --git a/test/t.py b/test/t.py\n+ test\n"
+    )
+    mock_web_responses[source_url] = MockWebResponse(200, b"contract Vault { nonReentrant }")
     mock_llm_responses.append(lambda p: {"p1_exploit_resolved": "HOLDS", "p2_no_regressions": "HOLDS", "p3_tests_adequate": "HOLDS", "citations": ["+ test"]})
     contract.evaluate_patch()
 
@@ -187,7 +199,7 @@ def test_contested_challenge_defended():
 
     contract.evaluate_challenge()
     assert contract.status == STATUS_DEFENDED
-    assert contract.bounty_amount == u256(11 * 10**18) # 10 GEN + 1 GEN slashed
+    assert contract.bounty_amount == u256(11 * 10**18)  # 10 GEN + 1 GEN slashed
 
     # Whitehat claims the fortified pool
     gl_instance.message.sender_address = WHITEHAT_ADDR

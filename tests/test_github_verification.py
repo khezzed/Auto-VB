@@ -28,7 +28,7 @@ def setup_environment():
 
 
 def test_evidence_404_handling():
-    """Fail-closed on 404: If patch or advisory is missing, predicates become UNCLEAR."""
+    """Fail-closed on 404: If patch diff, patched source, or advisory is missing, predicates become UNCLEAR."""
     contract = AutonomousVulnerabilityBounty(TARGET_REPO, ADVISORY_URL, u256(86400 * 30))
     gl_instance.message.value = u256(5 * 10**18)
     contract.fund_bounty()
@@ -38,8 +38,8 @@ def test_evidence_404_handling():
 
     # Missing advisory (404)
     mock_web_responses[ADVISORY_URL] = MockWebResponse(404, b"Not Found")
-    patch_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/patch.diff"
-    mock_web_responses[patch_url] = MockWebResponse(200, b"some diff")
+    diff_url = f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT}.diff"
+    mock_web_responses[diff_url] = MockWebResponse(200, b"diff --git a/src/Vault.sol b/src/Vault.sol\n+ some diff")
 
     contract.evaluate_patch()
     assert contract.status == STATUS_REMEDIATION_REQUIRED
@@ -48,7 +48,7 @@ def test_evidence_404_handling():
 
 
 def test_oversized_evidence_rejection():
-    """Reject oversized diff (>25,000 bytes) to prevent resource exhaustion."""
+    """Reject oversized commit diff (>25,000 bytes) to prevent resource exhaustion."""
     contract = AutonomousVulnerabilityBounty(TARGET_REPO, ADVISORY_URL, u256(86400 * 30))
     gl_instance.message.value = u256(5 * 10**18)
     contract.fund_bounty()
@@ -57,11 +57,11 @@ def test_oversized_evidence_rejection():
     contract.submit_patch(PATCH_COMMIT)
 
     mock_web_responses[ADVISORY_URL] = MockWebResponse(200, b"Advisory")
-    patch_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/patch.diff"
+    diff_url = f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT}.diff"
     # Create diff exceeding MAX_EVIDENCE_BYTES
-    oversized_diff = b"+ large payload\n" * 2000
+    oversized_diff = b"diff --git a/src/Vault.sol b/src/Vault.sol\n" + (b"+ large payload\n" * 2000)
     assert len(oversized_diff) > MAX_EVIDENCE_BYTES
-    mock_web_responses[patch_url] = MockWebResponse(200, oversized_diff)
+    mock_web_responses[diff_url] = MockWebResponse(200, oversized_diff)
 
     contract.evaluate_patch()
     assert contract.status == STATUS_REMEDIATION_REQUIRED
