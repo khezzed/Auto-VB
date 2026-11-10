@@ -16,7 +16,7 @@ from genlayer_py.types import TransactionHashVariant, TransactionStatus
 
 ENDPOINT = "https://studio.genlayer.com/api"
 EXPLORER_BASE = "https://explorer-studio.genlayer.com"
-DEPLOYED_COMMIT_SHA = "9c6b55dacc087f8642a752228a3165ef301b29bd"
+DEPLOYED_COMMIT_SHA = "329e9a9416ddd291fbbabb19c55e181955a7be24"
 PATCH_COMMIT_SHA = "9c6b55dacc087f8642a752228a3165ef301b29bd"
 TARGET_REPO = "khezzed/Auto-VB"
 
