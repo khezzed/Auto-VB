@@ -232,3 +232,167 @@ def test_sponsor_refund_boundaries():
     assert contract.status == STATUS_REFUNDED
     assert emitted_transfers[-1].recipient == SPONSOR_ADDR
     assert emitted_transfers[-1].value == u256(5 * 10**18)
+
+
+def test_challenge_unclear_or_fetch_error_remains_non_final_and_allows_retry():
+    """T-05: UNCLEAR or evidence-fetch errors in Round 2 remain non-final in STATUS_CHALLENGED, blocking bounty release and stake slashing until substantive adjudication."""
+    contract = AutonomousVulnerabilityBounty(TARGET_REPO, ADVISORY_URL, u256(86400 * 30))
+    gl_instance.message.value = u256(10 * 10**18)
+    contract.fund_bounty()
+    contract.balance = u256(11 * 10**18)
+
+    gl_instance.message.sender_address = WHITEHAT_ADDR
+    gl_instance.message.value = u256(0)
+    contract.submit_patch(PATCH_COMMIT)
+
+    mock_web_responses[ADVISORY_URL] = MockWebResponse(200, b"Advisory")
+    diff_url = f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT}.diff"
+    source_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/src/Vault.sol"
+    mock_web_responses[diff_url] = MockWebResponse(
+        200,
+        b"diff --git a/src/Vault.sol b/src/Vault.sol\n+ nonReentrant\ndiff --git a/test/t.py b/test/t.py\n+ test\n"
+    )
+    mock_web_responses[source_url] = MockWebResponse(200, b"contract Vault { nonReentrant }")
+    mock_llm_responses.append(lambda p: {"p1_exploit_resolved": "HOLDS", "p2_no_regressions": "HOLDS", "p3_tests_adequate": "HOLDS", "citations": ["+ test"]})
+    contract.evaluate_patch()
+
+    # Challenger stakes 1 GEN
+    gl_instance.message.sender_address = CHALLENGER_ADDR
+    gl_instance.message.value = u256(1 * 10**18)
+    contract.submit_challenge(CHALLENGE_COMMIT)
+
+    challenge_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{CHALLENGE_COMMIT}/exploit_proof.py"
+
+    # Attempt 1: Transient HTTP 503 evidence-fetch error on exploit proof
+    mock_web_responses[challenge_url] = MockWebResponse(503, b"Service Unavailable")
+    contract.evaluate_challenge()
+    assert contract.status == STATUS_CHALLENGED
+    assert contract.bounty_amount == u256(10 * 10**18)
+    assert contract.challenge_stake == u256(1 * 10**18)
+
+    # Whitehat cannot claim bounty while challenge is non-final
+    gl_instance.message.sender_address = WHITEHAT_ADDR
+    with pytest.raises(Exception, match="Bounty not eligible for claim"):
+        contract.claim_bounty()
+
+    # Attempt 2: Evidence fetches OK, but LLM returns UNCLEAR
+    mock_web_responses[challenge_url] = MockWebResponse(200, b"ambiguous proof")
+    mock_llm_responses.append(lambda p: {"c1_bypass_proven": "UNCLEAR", "citations": []})
+    contract.evaluate_challenge()
+    assert contract.status == STATUS_CHALLENGED
+    assert contract.bounty_amount == u256(10 * 10**18)
+    assert contract.challenge_stake == u256(1 * 10**18)
+
+    # Attempt 3: Retry succeeds with substantive CONTRADICTED verdict
+    mock_llm_responses.append(lambda p: {"c1_bypass_proven": "CONTRADICTED", "citations": ["nonReentrant"]})
+    contract.evaluate_challenge()
+    assert contract.status == STATUS_DEFENDED
+    assert contract.bounty_amount == u256(11 * 10**18)
+    assert contract.challenge_stake == u256(0)
+
+
+def test_challenge_unclear_timeout_refunds_stake_and_bounty_without_confiscation():
+    """T-06: If a challenge remains UNCLEAR past review_deadline, claim_refund safely returns stake to challenger and bounty to sponsor without confiscation."""
+    contract = AutonomousVulnerabilityBounty(TARGET_REPO, ADVISORY_URL, u256(86400 * 30))
+    gl_instance.message.value = u256(10 * 10**18)
+    contract.fund_bounty()
+    contract.balance = u256(11 * 10**18)
+
+    gl_instance.message.sender_address = WHITEHAT_ADDR
+    gl_instance.message.value = u256(0)
+    contract.submit_patch(PATCH_COMMIT)
+
+    mock_web_responses[ADVISORY_URL] = MockWebResponse(200, b"Advisory")
+    diff_url = f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT}.diff"
+    source_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/src/Vault.sol"
+    mock_web_responses[diff_url] = MockWebResponse(
+        200,
+        b"diff --git a/src/Vault.sol b/src/Vault.sol\n+ nonReentrant\ndiff --git a/test/t.py b/test/t.py\n+ test\n"
+    )
+    mock_web_responses[source_url] = MockWebResponse(200, b"contract Vault { nonReentrant }")
+    mock_llm_responses.append(lambda p: {"p1_exploit_resolved": "HOLDS", "p2_no_regressions": "HOLDS", "p3_tests_adequate": "HOLDS", "citations": ["+ test"]})
+    contract.evaluate_patch()
+
+    gl_instance.message.sender_address = CHALLENGER_ADDR
+    gl_instance.message.value = u256(1 * 10**18)
+    contract.submit_challenge(CHALLENGE_COMMIT)
+
+    # Challenge evaluation returns UNCLEAR (404 fetch error)
+    challenge_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{CHALLENGE_COMMIT}/exploit_proof.py"
+    mock_web_responses[challenge_url] = MockWebResponse(404, b"Not Found")
+    contract.evaluate_challenge()
+    assert contract.status == STATUS_CHALLENGED
+
+    # Fast forward past 7-day challenge review_deadline
+    gl_instance.message_raw = {"datetime": "2026-10-26T12:00:00+00:00"}
+
+    # Whitehat still cannot claim bounty
+    gl_instance.message.sender_address = WHITEHAT_ADDR
+    with pytest.raises(Exception, match="Bounty not eligible for claim"):
+        contract.claim_bounty()
+
+    # Challenger (or sponsor) triggers safe refund path: challenger gets 1 GEN stake back, sponsor gets 10 GEN bounty back
+    gl_instance.message.sender_address = CHALLENGER_ADDR
+    contract.claim_refund()
+    assert contract.status == STATUS_REFUNDED
+    assert contract.challenge_stake == u256(0)
+    assert contract.bounty_amount == u256(0)
+    assert len(emitted_transfers) == 2
+    assert emitted_transfers[0].recipient == CHALLENGER_ADDR
+    assert emitted_transfers[0].value == u256(1 * 10**18)
+    assert emitted_transfers[1].recipient == SPONSOR_ADDR
+    assert emitted_transfers[1].value == u256(10 * 10**18)
+
+
+def test_small_bounty_strictly_positive_minimum_challenge_stake_ceiling():
+    """T-07: Small bounty amounts enforce a strictly positive minimum stake preserving the full 10% requirement via ceiling division."""
+    # Case A: 5 wei bounty -> 10% ceiling is 1 wei (0 wei must be rejected)
+    contract_small = AutonomousVulnerabilityBounty(TARGET_REPO, ADVISORY_URL, u256(86400 * 30))
+    gl_instance.message.value = u256(5)
+    contract_small.fund_bounty()
+
+    gl_instance.message.sender_address = WHITEHAT_ADDR
+    gl_instance.message.value = u256(0)
+    contract_small.submit_patch(PATCH_COMMIT)
+
+    mock_web_responses[ADVISORY_URL] = MockWebResponse(200, b"Advisory")
+    diff_url = f"https://github.com/{TARGET_REPO}/commit/{PATCH_COMMIT}.diff"
+    source_url = f"https://raw.githubusercontent.com/{TARGET_REPO}/{PATCH_COMMIT}/src/Vault.sol"
+    mock_web_responses[diff_url] = MockWebResponse(
+        200,
+        b"diff --git a/src/Vault.sol b/src/Vault.sol\n+ nonReentrant\ndiff --git a/test/t.py b/test/t.py\n+ test\n"
+    )
+    mock_web_responses[source_url] = MockWebResponse(200, b"contract Vault { nonReentrant }")
+    mock_llm_responses.append(lambda p: {"p1_exploit_resolved": "HOLDS", "p2_no_regressions": "HOLDS", "p3_tests_adequate": "HOLDS", "citations": ["+ test"]})
+    contract_small.evaluate_patch()
+
+    gl_instance.message.sender_address = CHALLENGER_ADDR
+    gl_instance.message.value = u256(0)
+    with pytest.raises(Exception, match="Insufficient challenge stake. Required at least: 1"):
+        contract_small.submit_challenge(CHALLENGE_COMMIT)
+
+    gl_instance.message.value = u256(1)
+    contract_small.submit_challenge(CHALLENGE_COMMIT)
+    assert contract_small.status == STATUS_CHALLENGED
+
+    # Case B: 15 wei bounty -> 10% is 1.5 wei, ceiling requires at least 2 wei (1 wei must be rejected)
+    gl_instance.message.sender_address = SPONSOR_ADDR
+    gl_instance.message.value = u256(0)
+    contract_15 = AutonomousVulnerabilityBounty(TARGET_REPO, ADVISORY_URL, u256(86400 * 30))
+    gl_instance.message.value = u256(15)
+    contract_15.fund_bounty()
+
+    gl_instance.message.sender_address = WHITEHAT_ADDR
+    gl_instance.message.value = u256(0)
+    contract_15.submit_patch(PATCH_COMMIT)
+    mock_llm_responses.append(lambda p: {"p1_exploit_resolved": "HOLDS", "p2_no_regressions": "HOLDS", "p3_tests_adequate": "HOLDS", "citations": ["+ test"]})
+    contract_15.evaluate_patch()
+
+    gl_instance.message.sender_address = CHALLENGER_ADDR
+    gl_instance.message.value = u256(1)
+    with pytest.raises(Exception, match="Insufficient challenge stake. Required at least: 2"):
+        contract_15.submit_challenge(CHALLENGE_COMMIT)
+
+    gl_instance.message.value = u256(2)
+    contract_15.submit_challenge(CHALLENGE_COMMIT)
+    assert contract_15.status == STATUS_CHALLENGED
